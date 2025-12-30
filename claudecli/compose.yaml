@@ -1,0 +1,10 @@
+services:
+  claudecli:
+    image: ghcr.io/zeeno-atl/claude-code:latest
+    container_name: claudecli
+    pull_policy: "always"
+    volumes:
+      - ./app:/app
+    stdin_open: true
+    tty: true
+
