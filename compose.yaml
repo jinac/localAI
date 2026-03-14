@@ -13,7 +13,7 @@ services:
     ports:
       - ${OLLAMA_PORT}:11434
     environment:
-      OLLAMA_CONTEXT_LENGTH: 16000
+      OLLAMA_CONTEXT_LENGTH: 50000
     volumes:
       - ./ollama:/root/.ollama/
     tty: true
