@@ -18,6 +18,16 @@ services:
       - ./ollama:/root/.ollama/
     tty: true
 
+  researcher:
+    image: localdeepresearch/local-deep-research
+    container_name: researcher
+    ports:
+      - ${LDR_PORT}:5000
+    environment:
+      LDR_DATA_DIR: /data
+    volumes:
+      - ./deep-research:/data
+
   open-webui:
     build:
       context: .
