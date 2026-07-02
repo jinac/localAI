@@ -1,46 +1,38 @@
 services:
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    pull_policy: "always"
-    # If you don't have a gpu, remove/comment out all under [deploy] section
+  llamacpp:
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    container_name: llamacpp
+    #tty: true
+    ports:
+      - ${LLAMACPP_PORT}:8080
+    volumes:
+      - ./models:/models
+    environment:
+      - LLAMA_ARG_N_GPU_LAYERS=999
+    command: >
+      --models-dir /models
+      --models-max 1
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
               capabilities: [gpu]
-    ports:
-      - ${OLLAMA_PORT}:11434
-    environment:
-      OLLAMA_CONTEXT_LENGTH: 128000
-    volumes:
-      - ./ollama:/root/.ollama/
-    tty: true
+    restart: unless-stopped
 
   open-webui:
-    build:
-      context: .
-      args:
-        OLLAMA_BASE_URL: '/ollama'
-      dockerfile: Dockerfile
     image: ghcr.io/open-webui/open-webui:main
     container_name: open-webui
     pull_policy: "always"
     volumes:
       - ./open-webui:/app/backend/data
     depends_on:
-      - ollama
-    #deploy:
-    #  resources:
-    #    reservations:
-    #      devices:
-    #        - driver: nvidia
-    #          capabilities: [gpu]
+      - llamacpp
     ports:
       - ${OWUI_PORT}:8080
     environment:
-      - "OLLAMA_BASE_URL=${OLLAMA_BASE_URL}"
+      - "OPENAI_API_BASE_URLS=${LLAMACPP_BASE_URL}:8080"
+      - "OPENAI_API_KEY=none"
     extra_hosts:
       - host.docker.internal:host-gateway
     restart: unless-stopped
