@@ -2,16 +2,23 @@ services:
   llamacpp:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
     container_name: llamacpp
+    pull_policy: "always"
     #tty: true
     ports:
       - ${LLAMACPP_PORT}:8080
     volumes:
       - ./models:/models
-    environment:
-      - LLAMA_ARG_N_GPU_LAYERS=999
+    #environment:
+    #  - LLAMA_ARG_N_GPU_LAYERS=999
     command: >
       --models-dir /models
       --models-max 1
+      --flash-attn on
+      --n-gpu-layers 99
+      --ctx-size 0
+      --chat-template-kwargs '{"reasoning_effort": "medium"}'
+      --cont-batching
+      --jinja
     deploy:
       resources:
         reservations:
