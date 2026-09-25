@@ -15,8 +15,8 @@ services:
       --models-max 1
       --flash-attn on
       --n-gpu-layers 99
-      --ctx-size 0
-      --chat-template-kwargs '{"reasoning_effort": "medium"}'
+      --ctx-size 262144
+      --reasoning-format deepseek
       --cont-batching
       --jinja
     deploy:
