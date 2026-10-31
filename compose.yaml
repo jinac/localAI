@@ -26,20 +26,3 @@ services:
             - driver: nvidia
               capabilities: [gpu]
     restart: unless-stopped
-
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:main
-    container_name: open-webui
-    pull_policy: "always"
-    volumes:
-      - ./open-webui:/app/backend/data
-    depends_on:
-      - llamacpp
-    ports:
-      - ${OWUI_PORT}:8080
-    environment:
-      - "OPENAI_API_BASE_URLS=${LLAMACPP_BASE_URL}:8080"
-      - "OPENAI_API_KEY=none"
-    extra_hosts:
-      - host.docker.internal:host-gateway
-    restart: unless-stopped
